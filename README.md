@@ -38,7 +38,7 @@ pip install casino-dice
 To install the library from source:
 
 ```bash
-git clone https://github.com/username/casino_dice_entropy.git
+git clone https://github.com/anthony-ozdemir/casino-dice.git
 cd casino_dice
 pip install .
 ```
@@ -57,3 +57,35 @@ raw_binary = dice.get_raw_binary()
 # Compute the SHA-256 and SHA-512 hashes
 sha256_hash = dice.get_sha256_hash()
 sha512_hash = dice.get_sha512_hash()
+```
+
+
+### Generating a LUKS Master Key
+
+LUKS usually relies on hardware entropy generators to create its master key. However, as an alternative due to the potential trustworthiness concerns, we can use the casino-dice library for generating a master key with 128 bits of entropy by rolling a dice at least 50 times. Capture the dice rolls as a list and pass it to the `CasinoDice` object.
+
+```python
+import os
+from casino_dice import CasinoDice
+
+# Capture 50 dice rolls
+dice_rolls = [5, 1, 2, 4, 6, 3, 1, 2, 3, 5, 6, 2, 3, 4, 1, 6, 6, 1, 4, 3,
+              4, 5, 6, 2, 1, 6, 3, 5, 4, 1, 1, 6, 5, 3, 2, 2, 5, 6, 3, 4,
+              4, 2, 1, 6, 1, 3, 3, 4, 5, 2]
+
+# Initialize the CasinoDice object with the 50 dice rolls
+# for approximately 128bits of entropy
+dice = CasinoDice(dice_rolls)
+
+# Compute the SHA-512 hash to minimize entropy loss when creating
+# a master-key with 512bits
+sha512_hash = dice.get_sha512_hash()
+
+# Save the hash as the master key to a file
+with open('master_key.bin', 'wb') as f:
+    f.write(sha512_hash)
+```
+
+### Generating Other Cryptographic Keys
+
+Similarly, you can use the output of the Casino Dice Entropy library for generating other types of cryptographic keys like PGP keys, SSL certificates, etc., by using the resulting binary or hashed data as the input for the respective key generation tools.

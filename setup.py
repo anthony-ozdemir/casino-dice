@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="casino-dice",
-    version="1.0.0",
+    version="1.0.1",
     author="Anthony V. Ozdemir",
     author_email="anthony@anthonyozdemir.com",
     description="A library for generating byte objects from physical casino dice rolls",
